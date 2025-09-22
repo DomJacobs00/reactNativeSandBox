@@ -1,10 +1,12 @@
 import { Text, View } from "react-native";
 import '../global.css'
+import { SafeAreaView } from "react-native-safe-area-context";
+import InvoiceManager from "@/components/invoiceManager";
 export default function Index() {
   return (
-    <View
-    >
-      <Text className="bg-green-500">Edit app/index.tsx to edit this screen.</Text>
-    </View>
+    <SafeAreaView>
+
+      <InvoiceManager/>
+    </SafeAreaView>
   );
 }
