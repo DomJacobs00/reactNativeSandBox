@@ -21,8 +21,8 @@ export interface LabourItem {
     id?: number,
     taxFree?:boolean,
     date?:string,
-    siteLocation?:string,
-    description:string,
+    siteLocation:string,
+    description?:string,
     qty:string,
     rate:string,
     amount:number

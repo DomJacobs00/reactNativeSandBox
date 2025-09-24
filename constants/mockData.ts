@@ -1,3 +1,5 @@
+import { Invoice, LabourItem } from "@/interfaces/main";
+
 export const mockEmployee = {
     title: 'MR',
     name: 'John',
@@ -5,6 +7,28 @@ export const mockEmployee = {
     mobile: '07162616362',
     address: '123 test ln',
     postcode: 'M11M'
+}
+export const mockInvoice:Invoice = {
+  id:22,
+  date: '23/09/2025',
+  employee:mockEmployee,
+  labourItems : [
+    {id:1, taxFree:false, date:'23/09/2025', siteLocation:'Test Location', description: 'Test Description', qty:'1', rate:'112', amount:112 },
+    {id:1, taxFree:true, date:'23/09/2025', siteLocation:'Food', description: '', qty:'4', rate:'10', amount:40 }
+  ],
+  subtotal: 152,
+  lessCis: 22.40,
+  totalDue: 126.60
+}
+export const mockLabourItem:LabourItem = {
+  id:1, 
+  taxFree:false, 
+  date:'23/09/2025', 
+  siteLocation:'Test Location', 
+  description: 'Test Description', 
+  qty:'1', 
+  rate:'112', 
+  amount:112 
 }
 
 export const invoices = [
@@ -20,8 +44,8 @@ export const invoices = [
       { id: 5, date: '20/12/2024', siteLocation: 'Client Site - Gamma',   description: 'Diagnostics',            qty: 8, rate: 27.50, amount: 220.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 3, rate: 10.00, amount: 30.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 882.03
   },
   {
@@ -36,8 +60,8 @@ export const invoices = [
       { id: 5, date: '27/12/2024', siteLocation: 'Warehouse Unit 5',      description: 'Inspection and Testing',qty: 8, rate: 22.50, amount: 180.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 4, rate: 10.00, amount: 40.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 892.03
   },
   {
@@ -52,8 +76,8 @@ export const invoices = [
       { id: 5, date: '03/01/2025', siteLocation: 'A3E Garage',            description: 'External lighting',     qty: 8, rate: 25.00, amount: 200.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 3, rate: 10.00, amount: 30.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 882.03
   },
   {
@@ -68,8 +92,8 @@ export const invoices = [
       { id: 5, date: '10/01/2025', siteLocation: 'Courtyard Marriot',     description: 'Maintenance & Repairs', qty: 8, rate: 28.13, amount: 225.04 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 4, rate: 10.00, amount: 40.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 892.03
   },
   {
@@ -84,8 +108,8 @@ export const invoices = [
       { id: 5, date: '17/01/2025', siteLocation: 'Client Site - Beta',    description: 'Installations',         qty: 8, rate: 30.00, amount: 240.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 3, rate: 10.00, amount: 30.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 882.03
   },
   {
@@ -100,8 +124,8 @@ export const invoices = [
       { id: 5, date: '24/01/2025', siteLocation: 'Client Site - Gamma',   description: 'Diagnostics',           qty: 8, rate: 27.50, amount: 220.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 4, rate: 10.00, amount: 40.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 892.03
   },
   {
@@ -116,8 +140,8 @@ export const invoices = [
       { id: 5, date: '31/01/2025', siteLocation: 'Warehouse Unit 5',      description: 'Inspection and Testing',qty: 8, rate: 22.50, amount: 180.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 3, rate: 10.00, amount: 30.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 882.03
   },
   {
@@ -132,8 +156,8 @@ export const invoices = [
       { id: 5, date: '07/02/2025', siteLocation: 'A3E Garage',            description: 'External lighting',     qty: 8, rate: 25.00, amount: 200.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 4, rate: 10.00, amount: 40.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 892.03
   },
   {
@@ -148,8 +172,8 @@ export const invoices = [
       { id: 5, date: '14/02/2025', siteLocation: 'Courtyard Marriot',     description: 'Maintenance & Repairs', qty: 8, rate: 28.13, amount: 225.04 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 3, rate: 10.00, amount: 30.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 882.03
   },
   {
@@ -164,8 +188,8 @@ export const invoices = [
       { id: 5, date: '21/02/2025', siteLocation: 'Client Site - Beta',    description: 'Installations',         qty: 8, rate: 30.00, amount: 240.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 4, rate: 10.00, amount: 40.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 892.03
   },
   {
@@ -180,8 +204,8 @@ export const invoices = [
       { id: 5, date: '28/02/2025', siteLocation: 'Client Site - Gamma',   description: 'Diagnostics',           qty: 8, rate: 27.50, amount: 220.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 3, rate: 10.00, amount: 30.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 882.03
   },
   {
@@ -196,8 +220,8 @@ export const invoices = [
       { id: 5, date: '07/03/2025', siteLocation: 'Warehouse Unit 5',      description: 'Inspection and Testing',qty: 8, rate: 22.50, amount: 180.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 4, rate: 10.00, amount: 40.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 892.03
   },
   {
@@ -212,8 +236,8 @@ export const invoices = [
       { id: 5, date: '14/03/2025', siteLocation: 'A3E Garage',            description: 'External lighting',     qty: 8, rate: 25.00, amount: 200.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 3, rate: 10.00, amount: 30.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 882.03
   },
   {
@@ -228,8 +252,8 @@ export const invoices = [
       { id: 5, date: '21/03/2025', siteLocation: 'Courtyard Marriot',     description: 'Maintenance & Repairs', qty: 8, rate: 28.13, amount: 225.04 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 4, rate: 10.00, amount: 40.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 892.03
   },
   {
@@ -244,8 +268,8 @@ export const invoices = [
       { id: 5, date: '28/03/2025', siteLocation: 'Client Site - Beta',    description: 'Installations',         qty: 8, rate: 30.00, amount: 240.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 3, rate: 10.00, amount: 30.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 882.03
   },
   {
@@ -260,8 +284,8 @@ export const invoices = [
       { id: 5, date: '04/04/2025', siteLocation: 'Client Site - Gamma',   description: 'Diagnostics',           qty: 8, rate: 27.50, amount: 220.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 4, rate: 10.00, amount: 40.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 892.03
   },
   {
@@ -276,8 +300,8 @@ export const invoices = [
       { id: 5, date: '11/04/2025', siteLocation: 'Warehouse Unit 5',      description: 'Inspection and Testing',qty: 8, rate: 22.50, amount: 180.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 3, rate: 10.00, amount: 30.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 882.03
   },
   {
@@ -292,8 +316,8 @@ export const invoices = [
       { id: 5, date: '18/04/2025', siteLocation: 'A3E Garage',            description: 'External lighting',     qty: 8, rate: 25.00, amount: 200.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 4, rate: 10.00, amount: 40.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 892.03
   },
   {
@@ -308,8 +332,8 @@ export const invoices = [
       { id: 5, date: '25/04/2025', siteLocation: 'Courtyard Marriot',     description: 'Maintenance & Repairs', qty: 8, rate: 28.13, amount: 225.04 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 3, rate: 10.00, amount: 30.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 882.03
   },
   {
@@ -324,8 +348,8 @@ export const invoices = [
       { id: 5, date: '02/05/2025', siteLocation: 'Client Site - Beta',    description: 'Installations',         qty: 8, rate: 30.00, amount: 240.00 },
       { id: 6, date: null,         siteLocation: null,                     description: 'Food Allowance (Tax free)', qty: 4, rate: 10.00, amount: 40.00 },
     ],
-    subTotal: 1065.04,
-    LessCis: 213.01,
+    subtotal: 1065.04,
+    lessCis: 213.01,
     totalDue: 892.03
   }
 ];

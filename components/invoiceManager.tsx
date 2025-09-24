@@ -1,21 +1,27 @@
 import { Image, ScrollView, Text, View, TouchableOpacity, Modal, TextInput, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {invoices} from '../constants/mockData'
+import {invoices, mockInvoice, mockLabourItem} from '../constants/mockData'
 import { Icons } from "@/constants/Icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Invoice, LabourItem } from "@/interfaces/main";
 import AntDesign from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {InvoiceScreen} from "@/constants/InvoiceScreen";
 
 
 export default function InvoiceManager () {
     const [date, setDate] = useState(new Date())
     const[page, setPage] = useState('newEdit');
-    const curInvoices = invoices
+    const curInvoices = invoices;
+
+    const shareFnRef = useRef<(() => void) | null>(null);
     
     const [stage, setStage] = useState(1)
     const maxStage = 5;
     const [modal, setModal] = useState(false);
+    const [popModal, setPopModal ] = useState(false);
+
+    const[selectedInvoice, setSelectedInvoice] = useState<Invoice>(mockInvoice);
 
     
 
@@ -47,7 +53,7 @@ export default function InvoiceManager () {
     }
     const emptyInvoice:Invoice = {
         date:getFirstFriday(date),
-        labourItems:[],
+        labourItems:[mockLabourItem],
         subtotal:0,
         lessCis:0,
         totalDue:0
@@ -87,6 +93,14 @@ export default function InvoiceManager () {
                 ...newLabourItem,
                 amount: +lineAmount.toFixed(2),
             };
+            // isntead of appending we need to replace by id
+
+            //checking if id exsists
+
+            const dupe = newInvoice.labourItems.find(l=>l.id === newLabourItem.id)
+            if(dupe) {
+                
+            }
 
             setNewInvoice(prev => {
                 const nextItems = [...(prev.labourItems ?? []), newItem];
@@ -126,6 +140,22 @@ export default function InvoiceManager () {
         setNewLabourItem(emptyLabourItem);
         setStage(1);
     }
+
+    const gotoInvoice = (id:number) => {
+        // setting the invoice
+        setPage('edit');
+
+    }
+    const changeDateInvoice = () => {
+        setPopModal(true);
+    }
+    const getLabourItem = (id:number) => {
+        if(id === 0 )return;
+        const itemToEdit = newInvoice.labourItems.find(i=>i.id === id);
+        if(!itemToEdit) return;
+        setNewLabourItem(itemToEdit);
+        setModal(true);
+    }
     return (
         <SafeAreaView>
             {page === 'initial' && (
@@ -135,14 +165,14 @@ export default function InvoiceManager () {
                     </View>
                     <ScrollView className=" mx-3 h-[50vh] bg-white border border-gray-400 rounded-xl shadow-sm">
                         {curInvoices.map((invoice)=> (
-                            <View key = {invoice.id} className="flex flex-row items-center">
+                            <TouchableOpacity key = {invoice.id} onPress={() => gotoInvoice(invoice.id)} className="flex flex-row items-center">
                                 <Image
                                     source={Icons.invoiceSingle}
                                     className="h-20 w-20 p-2"
                                 />
                                 <Text className="text-2xl font-bold w-1/3">Invoice</Text>
                                 <Text className="text-2xl text-gray-400 font-light">{invoice.date}</Text>
-                            </View>
+                            </TouchableOpacity>
                         ))}
 
                     </ScrollView>
@@ -178,15 +208,15 @@ export default function InvoiceManager () {
                         <View className="w-[85%]">
                             <View className="flex flex-row">
                                 <Text className="w-1/3 text-gray-400 p-2">Number</Text>
-                                <Text className="text-gray-400 p-2">Week ending</Text>
+                                <Text className="text-gray-400 p-2">Week ending/ Date</Text>
                             </View>
                             <View className="flex flex-row">
-                                <Text className="w-1/3 p-2 text-lg">#0000001</Text>
-                                <Text className="p-2 text-lg">{newInvoice?.date}</Text>
+                                <Text className="w-1/3 p-2 text-lg">changeMe!</Text>
+                                <Text className="py-2 px-5 text-lg">{newInvoice?.date}</Text>
                             </View>
                         </View>
                         <View>
-                            <TouchableOpacity className="bg-blue-50 rounded-full p-2 m-2">
+                            <TouchableOpacity onPress={()=> changeDateInvoice()} className="bg-blue-50 rounded-full p-2 m-2">
                                 <Image
                                     source={Icons.editPen}
                                     className="h-8 w-8"
@@ -200,7 +230,7 @@ export default function InvoiceManager () {
                     </View>
                     <ScrollView className="w-[93%] bg-white border border-gray-300 rounded-lg shadow-md h-[38vh]">
                         {newInvoice?.labourItems?.map((item) => (
-                            <TouchableOpacity key={item.id} className="flex flex-row px-4 py-3">
+                            <TouchableOpacity key={item.id} className="flex flex-row px-4 py-3" onPress={()=>getLabourItem(item.id ?? 0)}>
                                 <View className="flex flex-col w-1/2 ">
                                     <Text className="text-xl">{item.siteLocation}</Text>
                                     {item.date !== '' && (
@@ -252,6 +282,88 @@ export default function InvoiceManager () {
                     </View>
                 </View>
             )}
+            {page === 'edit' && (
+                <>
+                    <View className="w-full h-[10vh] px-2">
+                        <View className="mb-3 -mt-5">
+                            <TouchableOpacity onPress={()=>setPage('initial')}>
+                                <Image 
+                                    source={Icons.back}
+                                    className="h-10 w-10"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View>
+                            <View className="flex flex-row">
+                                <Text className="w-1/3 text-lg">Invoice Date:</Text>
+                                <Text className="text-lg">Total:</Text>
+                            </View>
+                            <View className="flex flex-row">
+                                <Text className="w-1/3 text-lg font-bold">{selectedInvoice.date ?? ''}</Text>
+                                <Text className="text-lg font-bold">£ {formatMoney(selectedInvoice.totalDue)}</Text>
+                            </View>
+                        </View>
+
+
+                    </View>
+                    <View className="bg-gray-300 w-full h-[60vh]">
+                        
+                        <InvoiceScreen invoice={selectedInvoice} onReadyToShare={(fn) => { shareFnRef.current = fn; }}/>
+                    </View>
+                    <View className="bg-white w-full h-[10vh] flex flex-row py-4 px-2 justify-center border border-gray-300">
+                        <TouchableOpacity onPress={() => shareFnRef.current?.()} className="flex flex-row border  rounded-full h-[5vh] gap-2 items-center px-10">
+                            <Image 
+                                source={Icons.share}
+                                className="h-6 w-6"
+                            />
+                            <Text className="text-2xl">Send / Download</Text>
+                        </TouchableOpacity>
+                    </View>
+                </>
+            )}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={popModal}
+                onRequestClose={()=>setPopModal(false)}
+            >
+                <View className="flex-1 bg-black/50 justify-center p-8 ">
+                    <View className="bg-white w-full rounded-2xl p-4 h-[40vh]">
+                        <View className="flex flex-row justify-end w-full">
+                            <TouchableOpacity onPress={()=>setPopModal(false)}>
+                                <Image
+                                    source={Icons.closeIcon}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View className="w-full flex flex-col">
+                            <Text className="w-full text-center text-2xl">Select Invoice date:</Text>
+                            <View className="w-full items-center">
+
+                                <DateTimePicker
+                                    value={newInvoice.date ? toDate(newInvoice.date) : date} 
+                                    mode="date"
+                                    display="spinner"
+                                    onChange={(_,d)=> d && setNewInvoice(prev => ({
+                                        ...prev,
+                                        date: formatDate(d)
+                                    }))}
+
+                                    textColor="black"
+
+                                />
+                            </View>
+                        </View>
+                        <View className="w-full px-10">
+                            <TouchableOpacity onPress={()=>setPopModal(false)} className="rounded-full border bg-green-400 border-green-500">
+                                <Text className="text-2xl text-center py-1">Continue</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                </View>
+
+            </Modal>
             <Modal
                 animationType="slide"
                 transparent = {true}
@@ -376,7 +488,7 @@ export default function InvoiceManager () {
                                     <View>
                                         <Text className="text-3xl font-bold">Rate</Text>
                                         <TextInput 
-                                            
+                                            value={newLabourItem.rate ?? ''}
                                             onChangeText={(t) => {
                                                 const txt = t.replace(",", ".")
                                                 if(/^\d*\.?\d{0,2}$/.test(txt) || txt === "") {
@@ -448,6 +560,8 @@ export default function InvoiceManager () {
                     </View>
                 </View>
             </Modal>
+            
+
         </SafeAreaView>
     )
 }
