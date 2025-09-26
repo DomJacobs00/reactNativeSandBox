@@ -98,26 +98,54 @@ export default function InvoiceManager () {
             //checking if id exsists
 
             const dupe = newInvoice.labourItems.find(l=>l.id === newLabourItem.id)
-            if(dupe) {
-                
+
+            if (dupe) {
+
+                 setNewInvoice(prev => {
+                    const nextItems = (prev.labourItems ?? []).map(item =>
+                        item.id === newItem.id ? newItem : item
+                    );
+                    let subtotal = 0;
+                    let lessCis = 0;
+                    nextItems.map((item) => {
+                        subtotal += item.amount
+                        if(!item.taxFree) {
+
+                            lessCis += (Number(item.amount) * 0.2) 
+                        }
+
+                    });
+                    const total  = (subtotal - lessCis)
+                    
+                    return {...prev, labourItems: nextItems, subtotal:subtotal, lessCis:lessCis, totalDue: total  };
+                 })
+
+            } else {
+                setNewLabourItem(prev => ({
+                    ...prev, 
+                    id: (newInvoice.labourItems?.length?? 0) + 1
+                }))
+
+                setNewInvoice(prev => {
+                    
+                    const nextItems = [...(prev.labourItems ?? []), newItem];
+    
+                    const subtotal = +nextItems
+                    .reduce((sum, li) => sum + parseMoney(li.amount), 0)
+                    .toFixed(2);
+    
+                    const cisBase = +nextItems
+                    .reduce((sum, li) => sum + (li.taxFree ? 0 : parseMoney(li.amount)), 0)
+                    .toFixed(2);
+    
+                    const lessCis = +(cisBase * 0.2).toFixed(2);
+                    const totalDue = +(subtotal - lessCis).toFixed(2);
+    
+                    return { ...prev, labourItems: nextItems, subtotal, lessCis, totalDue };
+                });
             }
+            
 
-            setNewInvoice(prev => {
-                const nextItems = [...(prev.labourItems ?? []), newItem];
-
-                const subtotal = +nextItems
-                .reduce((sum, li) => sum + parseMoney(li.amount), 0)
-                .toFixed(2);
-
-                const cisBase = +nextItems
-                .reduce((sum, li) => sum + (li.taxFree ? 0 : parseMoney(li.amount)), 0)
-                .toFixed(2);
-
-                const lessCis = +(cisBase * 0.2).toFixed(2);
-                const totalDue = +(subtotal - lessCis).toFixed(2);
-
-                return { ...prev, labourItems: nextItems, subtotal, lessCis, totalDue };
-            });
 
             setNewLabourItem(emptyLabourItem);
             closeModal();
@@ -129,10 +157,7 @@ export default function InvoiceManager () {
         }
     }
     const openModal = () => {
-        setNewLabourItem(prev => ({
-            ...prev, 
-            id: (newInvoice.labourItems?.length?? 0) + 1
-        }))
+        
         setModal(true);
     }
     const closeModal = () => {
@@ -155,6 +180,10 @@ export default function InvoiceManager () {
         if(!itemToEdit) return;
         setNewLabourItem(itemToEdit);
         setModal(true);
+    }
+    const removeItem = (id:number) => {
+        if(id===0)return;
+
     }
     return (
         <SafeAreaView>
@@ -411,6 +440,7 @@ export default function InvoiceManager () {
                                                         <Text className="text-xl text-center">Today</Text>
                                                     </TouchableOpacity>
                                                 </View>
+                                                
                                             </>
                                         )}
                                         <View className="mt-10 flex flex-row justify-between px-10">
@@ -420,6 +450,13 @@ export default function InvoiceManager () {
                                                 taxFree:val,
                                             }))} />
                                         </View>
+                                        {newLabourItem.id && (
+                                            <View className="w-full mt-10 ">
+                                                <TouchableOpacity onPress={()=>removeItem(newLabourItem.id?? 0)} className="bg-red-500 w-1/2 px-4 py-1 rounded-full border border-red-400 shadow-sm" >
+                                                    <Text className="text-2xl text-center text-white font-bold">Delete Item</Text>
+                                                    </TouchableOpacity>
+                                            </View>
+                                        )}
                                     </View>
                                 </View>
                             </>
