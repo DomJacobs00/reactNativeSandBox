@@ -53,7 +53,7 @@ export default function InvoiceManager () {
     }
     const emptyInvoice:Invoice = {
         date:getFirstFriday(date),
-        labourItems:[mockLabourItem],
+        labourItems:[],
         subtotal:0,
         lessCis:0,
         totalDue:0
@@ -410,56 +410,51 @@ export default function InvoiceManager () {
                             </TouchableOpacity>
                         </View>
                         {stage === 1 && (
-                            <>
-                                <View className="w-full h-[80%] flex flex-col justify-between">
-                                    <View>
-                                        {newLabourItem.taxFree ? (
-                                            <></>
-                                        ): (
-                                            <>
-                                                <Text className="text-3xl font-bold"> Please select the date:</Text>
-                                                <View>
-                                                    <DateTimePicker 
-                                                        value={newLabourItem.date ? toDate(newLabourItem.date) : date} 
-                                                        mode="date"
-                                                        display="spinner"
-                                                        onChange={(_,d) => d && setNewLabourItem(prev=>({
-                                                            ...prev,
-                                                            date:formatDate(d)
-                                                        }))}
-                                                        textColor="black"
-                                                    />
-                                                </View>
-                                                <View className="flex flex-row gap-10">
-                                                    <TouchableOpacity 
-                                                        onPress={() => {
-                                                            setNewLabourItem(prev => ({ ...prev, date: formatDate(new Date())}))
-                                                        }}
-                                                        className={`border ${formatDate(new Date()) === newLabourItem.date ? 'bg-gray-300':'bg-gray-100'}  border-gray-400 rounded-xl w-[30%] py-1`}
-                                                    >
-                                                        <Text className="text-xl text-center">Today</Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                                
-                                            </>
-                                        )}
-                                        <View className="mt-10 flex flex-row justify-between px-10">
-                                            <Text className="text-2xl">Tax free?</Text>
-                                            <Switch value={newLabourItem.taxFree} onValueChange={(val)=>setNewLabourItem(prev=>({
-                                                ...prev,
-                                                taxFree:val,
-                                            }))} />
+                            <View className="w-full h-[80%] flex flex-col justify-between">
+                                {!newLabourItem.taxFree && (
+                                    <>
+                                        <Text className="text-3xl font-bold"> Please select the date:</Text>
+                                        <View>
+                                            <DateTimePicker 
+                                                value={newLabourItem.date ? toDate(newLabourItem.date) : date} 
+                                                mode="date"
+                                                display="spinner"
+                                                onChange={(_,d) => d && setNewLabourItem(prev=>({
+                                                    ...prev,
+                                                    date:formatDate(d)
+                                                }))}
+                                                textColor="black"
+                                            />
                                         </View>
-                                        {newLabourItem.id && (
-                                            <View className="w-full mt-10 ">
-                                                <TouchableOpacity onPress={()=>removeItem(newLabourItem.id?? 0)} className="bg-red-500 w-1/2 px-4 py-1 rounded-full border border-red-400 shadow-sm" >
-                                                    <Text className="text-2xl text-center text-white font-bold">Delete Item</Text>
-                                                    </TouchableOpacity>
-                                            </View>
-                                        )}
-                                    </View>
+                                        <View className="flex flex-row gap-10">
+                                            <TouchableOpacity 
+                                                onPress={() => {
+                                                    setNewLabourItem(prev => ({ ...prev, date: formatDate(new Date())}))
+                                                }}
+                                                className={`border ${formatDate(new Date()) === newLabourItem.date ? 'bg-gray-300':'bg-gray-100'}  border-gray-400 rounded-xl w-[30%] py-1`}
+                                            >
+                                                <Text className="text-xl text-center">Today</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        
+                                    </>
+                                )}
+                                <View className="mt-10 flex flex-row justify-between px-10">
+                                    <Text className="text-2xl">Tax free?</Text>
+                                    <Switch value={newLabourItem.taxFree} onValueChange={(val)=>setNewLabourItem(prev=>({
+                                        ...prev,
+                                        taxFree:val,
+                                    }))} />
                                 </View>
-                            </>
+                                {newLabourItem.id && (
+                                    <View className="w-full mt-10 ">
+                                        <TouchableOpacity onPress={()=>removeItem(newLabourItem.id?? 0)} className="bg-red-500 w-1/2 px-4 py-1 rounded-full border border-red-400 shadow-sm" >
+                                            <Text className="text-2xl text-center text-white font-bold">Delete Item</Text>
+                                            </TouchableOpacity>
+                                    </View>
+                                )}
+                            </View>
+
                         )}
                         {stage === 2 && (
                             <>
