@@ -4,7 +4,6 @@ import {invoices, mockInvoice, mockLabourItem} from '../constants/mockData'
 import { Icons } from "@/constants/Icons";
 import { useEffect, useRef, useState } from "react";
 import { Invoice, LabourItem } from "@/interfaces/main";
-import AntDesign from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {InvoiceScreen} from "@/constants/InvoiceScreen";
 
@@ -22,6 +21,7 @@ export default function InvoiceManager () {
     const [popModal, setPopModal ] = useState(false);
 
     const[selectedInvoice, setSelectedInvoice] = useState<Invoice>(mockInvoice);
+
 
     
 
@@ -185,6 +185,14 @@ export default function InvoiceManager () {
         if(id===0)return;
 
     }
+
+    //editing exsisting invoice
+    const editInvoice = () => {
+        if(!selectedInvoice) return;
+        setNewInvoice(selectedInvoice);
+        console.log(newInvoice)
+        setPage('newEdit');
+    }
     return (
         <SafeAreaView>
             {page === 'initial' && (
@@ -194,7 +202,7 @@ export default function InvoiceManager () {
                     </View>
                     <ScrollView className=" mx-3 h-[50vh] bg-white border border-gray-400 rounded-xl shadow-sm">
                         {curInvoices.map((invoice)=> (
-                            <TouchableOpacity key = {invoice.id} onPress={() => gotoInvoice(invoice.id)} className="flex flex-row items-center">
+                            <TouchableOpacity key = {invoice.id} onPress={() => gotoInvoice(invoice.id!)} className="flex flex-row items-center">
                                 <Image
                                     source={Icons.invoiceSingle}
                                     className="h-20 w-20 p-2"
@@ -314,12 +322,15 @@ export default function InvoiceManager () {
             {page === 'edit' && (
                 <>
                     <View className="w-full h-[10vh] px-2">
-                        <View className="mb-3 -mt-5">
+                        <View className="flex flex-row mb-3 -mt-5 justify-between">
                             <TouchableOpacity onPress={()=>setPage('initial')}>
                                 <Image 
                                     source={Icons.back}
                                     className="h-10 w-10"
                                 />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={()=>editInvoice()} className="border px-3 py-1 border-blue-400 bg-blue-100 rounded-lg">
+                                <Text className="text-3xl">Edit</Text>
                             </TouchableOpacity>
                         </View>
                         <View>
@@ -383,6 +394,7 @@ export default function InvoiceManager () {
                                 />
                             </View>
                         </View>
+                        
                         <View className="w-full px-10">
                             <TouchableOpacity onPress={()=>setPopModal(false)} className="rounded-full border bg-green-400 border-green-500">
                                 <Text className="text-2xl text-center py-1">Continue</Text>
@@ -410,10 +422,10 @@ export default function InvoiceManager () {
                             </TouchableOpacity>
                         </View>
                         {stage === 1 && (
-                            <View className="w-full h-[80%] flex flex-col justify-between">
+                            <View className= " w-full h-[80%] flex flex-col gap-3 " >
                                 {!newLabourItem.taxFree && (
                                     <>
-                                        <Text className="text-3xl font-bold"> Please select the date:</Text>
+                                        <Text className="text-3xl font-bold"> Please select the date: </Text>
                                         <View>
                                             <DateTimePicker 
                                                 value={newLabourItem.date ? toDate(newLabourItem.date) : date} 
@@ -426,7 +438,7 @@ export default function InvoiceManager () {
                                                 textColor="black"
                                             />
                                         </View>
-                                        <View className="flex flex-row gap-10">
+                                        <View className="flex flex-row">
                                             <TouchableOpacity 
                                                 onPress={() => {
                                                     setNewLabourItem(prev => ({ ...prev, date: formatDate(new Date())}))
@@ -439,16 +451,16 @@ export default function InvoiceManager () {
                                         
                                     </>
                                 )}
-                                <View className="mt-10 flex flex-row justify-between px-10">
+                                <View className="mt-5 flex flex-row justify-between px-10 bg-gray-100 p-2">
                                     <Text className="text-2xl">Tax free?</Text>
                                     <Switch value={newLabourItem.taxFree} onValueChange={(val)=>setNewLabourItem(prev=>({
                                         ...prev,
                                         taxFree:val,
                                     }))} />
                                 </View>
-                                {newLabourItem.id && (
+                                {!!newLabourItem.id && (
                                     <View className="w-full mt-10 ">
-                                        <TouchableOpacity onPress={()=>removeItem(newLabourItem.id?? 0)} className="bg-red-500 w-1/2 px-4 py-1 rounded-full border border-red-400 shadow-sm" >
+                                        <TouchableOpacity onPress={()=>removeItem(newLabourItem.id!)} className="bg-red-500 w-1/2 px-4 py-1 rounded-full border border-red-400 shadow-sm" >
                                             <Text className="text-2xl text-center text-white font-bold">Delete Item</Text>
                                             </TouchableOpacity>
                                     </View>
