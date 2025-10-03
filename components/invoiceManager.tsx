@@ -167,7 +167,10 @@ export default function InvoiceManager () {
     }
 
     const gotoInvoice = (id:number) => {
-        // setting the invoice
+        if(!id) return
+        const invoiceToSelect = curInvoices.find(i=>i.id === id);
+        if(!invoiceToSelect) return
+        setSelectedInvoice(invoiceToSelect);
         setPage('edit');
 
     }
