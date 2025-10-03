@@ -11,9 +11,11 @@ import {InvoiceScreen} from "@/constants/InvoiceScreen";
 export default function InvoiceManager () {
     const [date, setDate] = useState(new Date())
     const[page, setPage] = useState('newEdit');
+    const lastPage = useRef('initial');
     const curInvoices = invoices;
 
     const shareFnRef = useRef<(() => void) | null>(null);
+
     
     const [stage, setStage] = useState(1)
     const maxStage = 5;
@@ -194,6 +196,7 @@ export default function InvoiceManager () {
         if(!selectedInvoice) return;
         setNewInvoice(selectedInvoice);
         console.log(newInvoice)
+        lastPage.current = 'edit'
         setPage('newEdit');
     }
     return (
@@ -229,7 +232,17 @@ export default function InvoiceManager () {
             {page === 'newEdit' && (
                 <View className="flex flex-col items-center">
                     <View className={`w-full mb-5 flex flex-row ${newInvoice.labourItems.length === 0  ? '': 'justify-between'}`}>
-                        <TouchableOpacity onPress={()=>setPage('initial')}>
+                        <TouchableOpacity onPress={()=> {
+                            if(lastPage.current !== 'initial') {
+
+                                setPage(lastPage.current)
+                                lastPage.current = 'initial';
+                            }
+                            else {
+                                setPage('initial');
+                            }
+
+                            }}>
                             <Image 
                                 source={Icons.back}
                                 className="h-10 w-10"
