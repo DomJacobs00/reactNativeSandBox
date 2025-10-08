@@ -1,4 +1,4 @@
-import { Image, ScrollView, Text, View, TouchableOpacity, Modal, TextInput, Switch } from "react-native";
+import { Image, ScrollView, Text, View, TouchableOpacity, Modal, TextInput, Switch, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {invoices, mockInvoice, mockLabourItem} from '../constants/mockData'
 import { Icons } from "@/constants/Icons";
@@ -188,6 +188,28 @@ export default function InvoiceManager () {
     }
     const removeItem = (id:number) => {
         if(id===0)return;
+        setNewInvoice(prev => ({
+            ...prev,
+            labourItems: (prev.labourItems ?? []).filter(i=> i.id !== id)
+        }));
+        setNewInvoice( prev => {
+            const remainingItems = (prev.labourItems ?? []).filter(i=>i.id !== id);
+            let subtotal = 0;
+            let lessCis = 0;
+            remainingItems.map((item)=> {
+                subtotal += item.amount
+                if(!item.taxFree) {
+                    lessCis += (Number(item.amount) * 0.2)
+                }
+            })
+            const total = (subtotal - lessCis)
+
+            return { ...prev, labourItems:remainingItems, subtotal:subtotal, lessCis:lessCis, totalDue:total};
+        })
+        closeModal();
+        setTimeout(() => {
+            Alert.alert('Item Deleted')
+        }, 1000)
 
     }
 
